@@ -6,11 +6,11 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   price: {
-    type: Number,
+    type: String || Number,
     required: true,
   },
   stock: {
-    type: Number,
+    type: String || Number,
     required: true,
   },
   description: {
@@ -21,8 +21,13 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  imageUrl: {
+  images: {
     type: Object,
+    required: true,
+  },
+  userId:{
+    type: String,
+    required: true,
   },
   delete: {
     type: Boolean,

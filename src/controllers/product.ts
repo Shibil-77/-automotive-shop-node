@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary");
 
 export const addProduct = async (req: Request, res: Response) => {
   try {
-    const { product, price, stock, category, description } = req.body;
+    const { product, price, stock, category, description,images } = req.body.formData;
     if (req.body) {
       const newProduct = new productSchema({
         product,
@@ -12,6 +12,8 @@ export const addProduct = async (req: Request, res: Response) => {
         stock,
         category,
         description,
+        userId: req.body.userId,
+        images
       });
 
       try {
@@ -28,10 +30,8 @@ export const addProduct = async (req: Request, res: Response) => {
 };
 
 export const getAllProducts = async (req: Request, res: Response) => {
-  console.log("hiiiii");
-
   try {
-    const productData = await productSchema.find();
+    const productData = await productSchema.find({userId: req.body.userId});
     if (productData) {
       res.status(200).json({ productData });
     }
@@ -41,12 +41,37 @@ export const getAllProducts = async (req: Request, res: Response) => {
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
-  console.log(req.params.id);
   try {
     const productData = await productSchema.findOneAndDelete({
       _id: req.params.id,
     });
-    console.log(productData, "productData");
+    if (productData) {
+      res.status(200).json({ productData });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "error" });
+  }
+};
+
+export const getProductData = async (req: Request, res: Response) => {
+  try {
+    const productData = await productSchema.findOne({
+      _id: req.params.id,
+    });
+    if (productData) {
+      res.status(200).json({ productData });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "error" });
+  }
+};
+
+export const editProductData = async (req: Request, res: Response) => {
+  try {
+    const productData = await productSchema.findByIdAndUpdate(
+      req.params.id,
+      req.body
+    );
     if (productData) {
       res.status(200).json({ productData });
     }
